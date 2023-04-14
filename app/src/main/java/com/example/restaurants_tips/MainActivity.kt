@@ -217,7 +217,6 @@ fun ThreeColumnsAndRows(tip: String, percent: Float, amount: String) {
                     style = MaterialTheme.typography.h6,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxSize()
-                        .background(Color.LightGray)
 
                 )
             }
@@ -233,8 +232,6 @@ fun ThreeColumnsAndRows(tip: String, percent: Float, amount: String) {
                     style = MaterialTheme.typography.h6,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxSize()
-                        .background(Color.LightGray)
-
                 )
             }
         }
