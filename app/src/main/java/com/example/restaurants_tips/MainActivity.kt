@@ -1,25 +1,20 @@
 package com.example.restaurants_tips
 
 import android.os.Bundle
-import android.widget.SeekBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.restaurants_tips.ui.theme.Restaurants_tipsTheme
-import java.text.NumberFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +99,7 @@ fun RestaurantTipCalculator() {
 }
 
 @Composable
-fun InsertAmount(){
+fun InsertAmount() {
     var billAmount by rememberSaveable { mutableStateOf("") }
     var tipPercentage by rememberSaveable { mutableStateOf(18f) }
 
@@ -158,7 +152,7 @@ fun InsertAmount(){
             )
             Slider(
                 value = tipPercentage,
-                onValueChange = { tipPercentage = it},
+                onValueChange = { tipPercentage = it },
                 valueRange = 0f..30f,
                 modifier = Modifier.width(250.dp)
             )
@@ -168,8 +162,12 @@ fun InsertAmount(){
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
-        ){
-            ThreeColumnsAndRows(calculateTip(billAmount,tipPercentage.toString()),tipPercentage, billAmount)
+        ) {
+            ThreeColumnsAndRows(
+                calculateTip(billAmount, tipPercentage.toString()),
+                tipPercentage,
+                billAmount
+            )
         }
     }
 }
@@ -178,7 +176,8 @@ fun formatDecimal(value: String): String {
     var cleanString = value.replace(Regex("[^\\d]"), "")
     val decimalIndex = cleanString.length - 2
     if (decimalIndex >= 1) {
-        cleanString = cleanString.substring(0, decimalIndex) + "." + cleanString.substring(decimalIndex)
+        cleanString =
+            cleanString.substring(0, decimalIndex) + "." + cleanString.substring(decimalIndex)
     }
     if (cleanString.length > 5) {
         cleanString = cleanString.substring(0, cleanString.length - 5) + "." +
@@ -191,142 +190,87 @@ fun formatDecimal(value: String): String {
 
 @Composable
 fun ThreeColumnsAndRows(tip: String, percent: Float, amount: String) {
-    Column(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth()) {
-                Column(
-                    Modifier
-                        .weight(1f)
-                        .size(100.dp,27.dp)
-                ) {
-                    Text(
-                        text = " ",
-                        style = MaterialTheme.typography.h6,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .size(100.dp,27.dp)
-                    .border(2.dp, color = Color.White)
 
-            ) {
-                Text(
-                    text = "15%",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
+    Column(Modifier.fillMaxSize()) {
+        Row() {
+            Text(
+                text = " ", modifier = Modifier
+                    .weight(1.0f)
+            )
+            Text(
+                text = "15%",
+                modifier = Modifier
+                    .weight(1.0f)
+                    .border(2.dp, color = Color.White),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
 
                 )
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .size(100.dp,27.dp)
-                    .border(2.dp, color = Color.White)
+            Text(
+                text = "${percent.toInt()}%",
+                modifier = Modifier
+                    .weight(1.0f)
+                    .border(2.dp, color = Color.White),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+            )
 
-            ) {
-                Text(
-                    text = "${percent.toInt()}%",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
         }
-        Row(Modifier.fillMaxWidth()) {
-            Column(Modifier.weight(1f)
-                .size(100.dp,27.dp)
-                .border(2.dp, color = Color.White)
+        Row() {
+            Text(
+                text = "Tip:  ",
+                modifier = Modifier
+                    .weight(1.0f) ,
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.End,
+            )
+            Text(
+                text = "${calculateTipDefaultPercent(amount)} R$",
+                modifier = Modifier
+                    .weight(1.0f)
+                    .background(Color.LightGray)
+                    .border(2.dp, color = Color.White),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "$tip RS", modifier = Modifier
+                    .weight(1.0f)
+                    .background(Color.LightGray)
+                    .border(2.dp, color = Color.White),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+            )
 
-            ) {
-                Text(
-                    text = "Tip",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxSize()
-                        .padding(end = 14.dp)
-                )
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .size(100.dp,27.dp)
-                    .border(2.dp, color = Color.White)
-            ) {
-                Text(
-                    text = "${calculateTipDefaultPercent(amount)} R$",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
-                        .background(Color.LightGray)
-
-                )
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .size(100.dp,27.dp)
-                    .border(2.dp, color = Color.White)
-
-            ) {
-                Text(
-                    text = "$tip RS",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
-                        .background(Color.LightGray)
-
-                )
-            }
         }
-        Row(Modifier.fillMaxWidth()) {
-            Column(Modifier.weight(1f)
-                .size(100.dp,27.dp)
-                .border(2.dp, color = Color.White)) {
-                Text(
-                    text = "Total",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxSize()
-                        .padding(end = 14.dp)
-                )
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .size(100.dp,27.dp)
-                    .border(2.dp, color = Color.White)
+        Row() {
+            Text(
+                text = "Total:  ", modifier = Modifier
+                    .weight(1.0f),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.End,
+            )
+            Text(
+                text = "${totalValue(calculateTipDefaultPercent(amount), amount)}",
+                modifier = Modifier
+                    .weight(1.0f)
+                    .background(Color.LightGray)
+                    .border(2.dp, color = Color.White),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = totalValue(calculateTip(amount, percent.toString()), amount),
+                modifier = Modifier
+                    .weight(1.0f)
+                    .background(Color.LightGray)
+                    .border(2.dp, color = Color.White),
+                style = MaterialTheme.typography.subtitle1,
+                textAlign = TextAlign.Center,
+            )
 
-            ) {
-                Text(
-                    text = "${totalValue(calculateTipDefaultPercent(amount), amount)}",
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
-                        .background(Color.LightGray)
-
-
-                )
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .size(100.dp,27.dp)
-                    .border(2.dp, color = Color.White)
-
-            ) {
-                Text(
-                    text = totalValue(calculateTip(amount, percent.toString()), amount),
-                    style = MaterialTheme.typography.h6,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
-                        .background(Color.LightGray)
-
-                )
-            }
         }
+
     }
 }
 
@@ -345,10 +289,10 @@ fun calculateTipDefaultPercent(billAmount: String): String {
 
 fun totalValue(percent: String, amount: String): String {
     println("tip$percent")
-    val newTip = percent.replace(',','.')
+    val newTip = percent.replace(',', '.')
     val amountFloat = amount.toFloatOrNull() ?: 0f
     val percentTotal = newTip.toFloatOrNull() ?: 0f
-    val total =  amountFloat + percentTotal
+    val total = amountFloat + percentTotal
     println("amount $amountFloat")
     println("tip$percentTotal")
     return "%.2f".format(total)
